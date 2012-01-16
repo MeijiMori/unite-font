@@ -99,8 +99,10 @@ function! s:unite_source.gather_candidates(args, context) "{{{
   elseif (has('win32') || has('win64')) && executable(s:fontinfo_cmd_pass)
     " use vimproc
     try
+      let s:exists_vimproc_version = vimproc#version()
       let list = split(iconv(vimproc#system(s:fontinfo_cmd_pass), 'utf-8', &encoding), "\n")
     catch
+      " echomsg "Don't use vimproc"
       let list = split(iconv(system(s:fontinfo_cmd_pass), 'utf-8', &encoding), "\n")
     endtry
   elseif executable('fc-list')
@@ -123,11 +125,11 @@ function! s:unite_source.gather_candidates(args, context) "{{{
              \                    '*unknown system*'
   let style = s:fon_style
 
-  " if s:command == "guifont"
-  let demonstration = '[<wWoO0iI1lL!"#$%&''^\()>]'
-  " else
-  "   let demonstration = '[あいうえおアイウエオ]'
-  " endif
+  if s:command =~?  "guifont"
+    let demonstration = '[<wWoO0iI1lL!"#$%&''^\()>]'
+  else
+    let demonstration = '[あいうえおアイウエオ]'
+  endif
 
   " Debug"{{{
   " for sys_font in list
