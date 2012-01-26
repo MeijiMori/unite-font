@@ -184,7 +184,7 @@ function! s:unite_source.action_table.change_size.func(candidate) "{{{
   let size = input("input font size : ", default_size)
 
   " Debug "{{{
-  " echomsg " input size : " . size
+  echomsg " input size : " . size
   "}}}
 
   if size == ''
@@ -216,13 +216,14 @@ function! s:unite_source.action_table.change_size.func(candidate) "{{{
         " echomsg "&guifont : " . &guifont
         " echomsg "&guifontwide : " . &guifontwide
         "}}}
-        let convert_font_name = substitute(a:candidate.word, '\:h\d*', '', 'g')
-        let convert_fontw_name = substitute(&guifontwide, '\:h\d*', '', 'g')
+        let convert_font_name = substitute(a:candidate.word, '\:h\d*.*', '', 'g')
+        let convert_fontw_name = substitute(&guifontwide, '\:h\d*.*', '', 'g')
         let &guifont = convert_font_name . ':h' . size
         let &guifontwide = convert_fontw_name . ':h' . size
         " Debug"{{{
         " echomsg "convert_font_name : " . convert_font_name
         " echomsg "convert_fontw_name : " . convert_fontw_name
+        " echomsg "unite-font change size action run command : " .  'let &guifont = ' . convert_font_name . ':h' . size
         "}}}
       elseif s:command == "guifontwide"
         " Debug"{{{
@@ -230,13 +231,13 @@ function! s:unite_source.action_table.change_size.func(candidate) "{{{
         " echomsg "&guifont : " . &guifont
         " echomsg "&guifontwide : " . &guifontwide
         "}}}
-        let convert_font_name = substitute(&guifont, '\:h\d*', '', 'g')
-        let convert_fontw_name = substitute(a:candidate.word, '\:h\d*', '', 'g')
+        let convert_font_name = substitute(&guifont, '\:h\d*.*', '', 'g')
+        let convert_fontw_name = substitute(a:candidate.word, '\:h\d*.*', '', 'g')
         let &guifont = convert_font_name . ':h' . size
         let &guifontwide = convert_fontw_name . ':h' . size
         " Debug"{{{
-        echomsg "convert_font_name : " . convert_font_name
-        echomsg "convert_fontw_name : " . convert_fontw_name
+        " echomsg "convert_font_name : " . convert_font_name
+        " echomsg "convert_fontw_name : " . convert_fontw_name
         "}}}
       endif
     else
@@ -359,7 +360,7 @@ function! s:unite_source.hooks.on_close(args, context) "{{{
 
   if s:command == "guifont"
     if s:beforefont == &guifont && s:beforesize == s:fon_size
-      echomsg 'return'
+      echomsg 'font : ' . s:beforefont
       return
     elseif s:beforefont == &guifont && s:beforesize != s:fon_size
       execute "let &guifont=" . string(s:beforefont . s:fon_size)
